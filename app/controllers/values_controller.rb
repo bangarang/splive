@@ -1,4 +1,7 @@
+require 'streamer/sse'
+
 class ValuesController < ApplicationController
+  include ActionController::Live
   # GET /values
   # GET /values.json
   def index
@@ -17,15 +20,46 @@ class ValuesController < ApplicationController
 
   # POST /values
   # POST /values.json
-  def create
-    @value = Value.new(params[:value])
+  # def create
+  #   @value = Value.new(params[:value])
 
-    if @value.save
-      # render json: @value, status: :created, location: @value
-      redirect_to '/'
-    else
-      render json: @value.errors, status: :unprocessable_entity
+  #   @sensor = Sensor.find(params[:id])
+  #   @value.sensor_id ||= @sensor.id
+
+
+
+  #   if @value.save
+  #     # render json: @value, status: :created, location: @value
+  #     $redis.publish('sensors.update', { :name => @sensor.name, :value => @sensor.value, :id => @sensor.id}.to_json)
+  #   else
+  #     render json: @value.errors, status: :unprocessable_entity
+  #   end
+  # end
+  def create
+    response.headers['Content-Type'] = 'text/javascript'
+    @value = Value.new(params[:value])
+    @sensor = Sensor.find(params[:id])
+    @value.sensor_id ||= @sensor.id
+    @value.save
+    $redis.publish('sensors.update', { :value => @value.decibel, :id => @sensor.id}.to_json)
+    render nothing: true
+  end
+
+  def events
+    response.headers['Content-Type'] = 'text/event-stream'
+    sse = Streamer::SSE.new(response.stream)
+    redis = Redis.new
+    redis.subscribe('sensors.update') do |on|
+      on.message do |event, data|
+        sse.write(data, event: 'sensors.update')
+      end
     end
+    render nothing: true
+  rescue IOError
+    # Client disconnected
+  ensure
+    redis.quit
+    sse.close
   end
 
   # PATCH/PUT /values/1

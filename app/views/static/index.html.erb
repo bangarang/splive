@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sensors List</title>
+    <style type="text/css" media="screen">
+      html, body {
+        font-family: Verdana, Helvetica, Arial;
+        font-size: 14px;
+      }
+      a { color: #0000FF; }
+
+      #container {
+        width: 75%;
+        margin: 0 auto;
+        background-color: #FFF;
+        padding: 20px 40px;
+        margin-top: 20px;
+      }
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" charset="utf-8">
+      jQuery(document).ready(function() {
+
+        $.getJSON('/sensors', function(sensors) {
+            $.each(sensors, function() { addSensor(this); });
+          });
+        function addSensor(sensor) {
+            $('#sensors').append( '<li id="'+ sensor.id + '"><b>' + sensor.name + '</b>' + ' Current Value: <span>' + sensor.value + '</span></li>');
+          }
+
+        var source = new EventSource('/sensors/events'),
+            sensor;
+
+        source.addEventListener('sensors.new', function (e) {
+          sensor = JSON.parse(e.data);
+          $('#sensors').append( '<li id="'+ sensor.id + '"><b>' + sensor.name + '</b>' + ' Current Value: <span>' + sensor.value + '</span></li>');
+        });
+        var source2 = new EventSource('/values/events'),
+            sensor2;
+        source2.addEventListener('sensors.update', function (e) {
+          sensor2 = JSON.parse(e.data);
+          $('#sensors li#'+ sensor2.id +' span').html("").append('<span>' + sensor2.value + '</span>');;
+        });
+
+      });
+    </script>
+  <body>
+    <div id="container">
+      <h1>Sensors List</h1>
+      <ul id="sensors"></ul>
+    </div>
+  </body>
+</html>

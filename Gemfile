@@ -4,7 +4,8 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.0'
 
 gem 'rails-api'
-
+gem 'puma'
+gem 'redis'
 # Use sqlite3 as the database for Active Record
 group :development, :test do
   gem 'sqlite3'

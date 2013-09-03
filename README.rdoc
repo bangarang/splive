@@ -1,28 +1,19 @@
-== README
+http://sheltered-badlands-4355.herokuapp.com
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+wrapper displaying current contents of SPLIVE database
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+add a value:
+	{SENSOR_ID} = sensor's ID
+	{DECIBEL_VALUE} = value of the sensor
+curl -d "value[decibel]={DECIBEL_VALUE}" http://sheltered-badlands-4355.herokuapp.com/sensors/{SENSOR_ID}/values
+
+Example: 
+	curl -d "value[decibel]=1" http://sheltered-badlands-4355.herokuapp.com/sensors/5/values
+
+add a sensor:
+	{SENSOR_NAME} = name of sensor
+curl -d "sensor[name]={SENSOR_NAME}" http://sheltered-badlands-4355.herokuapp.com/sensors
+
+Example: 
+	curl -d "sensor[name]=LeftSensor" http://sheltered-badlands-4355.herokuapp.com/sensors/
