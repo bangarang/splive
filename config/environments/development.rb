@@ -28,4 +28,5 @@ Splive::Application.configure do
   config.assets.debug = true
 
   $redis = Redis.new
+  ENV["REDISTOGO_URL"] = 'redis://localhost:6389'
 end
