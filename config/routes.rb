@@ -1,11 +1,11 @@
 Splive::Application.routes.draw do
+  get "/" => "static#index"
   resources :sensors do   
     member do
       resources 'values'
     end
   end
 
-  root :controller => 'static', :action => '/' 
 
   # resources :values, except: [:new, :edit]
   # resources :sensors, except: [:new, :edit]
