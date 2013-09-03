@@ -22,7 +22,7 @@ class ValuesController < ApplicationController
 
     if @value.save
       # render json: @value, status: :created, location: @value
-      redirect_to root_path
+      redirect_to '/'
     else
       render json: @value.errors, status: :unprocessable_entity
     end
