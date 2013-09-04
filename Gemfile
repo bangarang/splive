@@ -8,9 +8,8 @@ gem 'rails-api'
 gem 'puma'
 gem 'redis'
 # Use sqlite3 as the database for Active Record
-group :development, :test do
-  gem 'sqlite3'
-end
+
+gem 'sqlite3'
 
 group :production do
   gem 'pg', '0.15.1'
