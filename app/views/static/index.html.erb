@@ -24,19 +24,20 @@
         $.getJSON('/sensors', function(sensors) {
             $.each(sensors, function() { addSensor(this); });
           });
+
         function addSensor(sensor) {
-            $('#sensors').append( '<li id="'+ sensor.id + '"><b>' + sensor.name + '</b>' + ' Current Value: <span>' + sensor.value + '</span></li>');
+            $('#sensors').append( '<li id="'+ sensor.id + '"><a href="/sensor_time/' + sensor.id + '"><b>' + sensor.name + '</b></a>' + ' Current Value: <span>' + sensor.value + '</span></li>');
           }
 
-        var source = new EventSource('/sensors/events'),
-            sensor;
+        var source = new EventSource('/sensors/events'), sensor;
 
         source.addEventListener('sensors.new', function (e) {
           sensor = JSON.parse(e.data);
-          $('#sensors').append( '<li id="'+ sensor.id + '"><b>' + sensor.name + '</b>' + ' Current Value: <span>' + sensor.value + '</span></li>');
+          $('#sensors').append( '<li id="'+ sensor.id + '"><a href="/sensor_time/' + sensor.id + '"><b>' + sensor.name + '</b></a>' + ' Current Value: <span>' + sensor.value + '</span></li>');
         });
-        var source2 = new EventSource('/values/events'),
-            sensor2;
+
+        var source2 = new EventSource('/values/events'),  sensor2;
+
         source2.addEventListener('sensors.update', function (e) {
           sensor2 = JSON.parse(e.data);
           $('#sensors li#'+ sensor2.id +' span').html("").append('<span>' + sensor2.value + '</span>');;
@@ -44,6 +45,8 @@
 
       });
     </script>
+
+
   <body>
 
     <div id="container">

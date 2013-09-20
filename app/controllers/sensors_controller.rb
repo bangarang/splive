@@ -18,8 +18,19 @@ class SensorsController < ApplicationController
   # GET /sensors/1.json
   def show
     @sensor = Sensor.find(params[:id])
+    @values = @sensor.values
 
-    render json: { :name => @sensor.name, :value => @sensor.value, :id => @sensor.id}
+    s = []
+    for v in @values 
+      s.push( { :id => v.id, :decibel => v.decibel } )
+    end
+    @v = s
+
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: { :name => @sensor.name, :value => @sensor.value, :id => @sensor.id} }
+    end
   end
 
   # def values
@@ -45,7 +56,7 @@ class SensorsController < ApplicationController
     @sensor = Sensor.new(params[:sensor])
     @sensor.save
     $redis.publish('sensors.new', { :name => @sensor.name, :value => @sensor.value, :id => @sensor.id}.to_json)
-    render nothing: true
+    render :text => @sensor.id
   end
 
 

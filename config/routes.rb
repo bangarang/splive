@@ -1,5 +1,6 @@
 Splive::Application.routes.draw do
   get "/" => "static#index"
+  get "/sensor_time/:id" => "static#sensor"
   resources :sensors do   
     collection { get :events }
     member do

@@ -7,7 +7,14 @@ class ValuesController < ApplicationController
   def index
     @sensor = Sensor.find(params[:id])
     @values = @sensor.values
-    render json: @values
+    # render json: @values
+
+    s = []
+    for v in @values 
+      s.push( { :id => v.id, :decibel => v.decibel } )
+    end
+    render json: s
+
   end
 
   # GET /values/1
@@ -15,7 +22,7 @@ class ValuesController < ApplicationController
   def show
     @value = Value.find(params[:id])
 
-    render json: @value
+    render json: { :decibel => @value.decibel, :id => @value.id }
   end
 
   # POST /values
